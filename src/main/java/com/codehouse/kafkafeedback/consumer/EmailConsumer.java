@@ -19,7 +19,7 @@ public class EmailConsumer {
     Content content = new Content("text/plain",   feedBackEmail.getBody());
     Mail mail = new Mail(from, subject, to, content);
 
-    SendGrid sg = new SendGrid("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");
+    SendGrid sg = new SendGrid(" ");
     Request request = new Request();
     try {
       request.setMethod(Method.POST);
