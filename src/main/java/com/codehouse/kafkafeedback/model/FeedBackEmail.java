@@ -21,22 +21,24 @@ import lombok.ToString;
 @NoArgsConstructor
 @Builder
 @Getter
+@Setter
 @ToString
 public class FeedBackEmail implements Serializable {
-//  private String subject;
-//  private String body;
-//  private String receiverEmail;
 
   private Integer id;
   private String email;
   private Integer rating;
   private String comment;
+  private String posFeedback;
+  private String negFeedback;
   private String date;
 
-  public FeedBackEmail(String email, Integer rating, String comment, String date) {
+  public FeedBackEmail(String email, Integer rating, String comment, String posFeedback, String negFeedback, String date) {
     this.email = email;
     this.rating = rating;
     this.comment = comment;
+    this.posFeedback = posFeedback;
+    this.negFeedback = negFeedback;
     this.date = date;
   }
 
