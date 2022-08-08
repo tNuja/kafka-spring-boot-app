@@ -1,12 +1,17 @@
 package com.codehouse.kafkafeedback.consumer;
 
-import com.codehouse.kafkafeedback.model.FeedBackEmail;
+import com.codehouse.kafkafeedback.model.SessionDetails;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.sendgrid.Email;
+import com.sendgrid.Mail;
+import com.sendgrid.Method;
+import com.sendgrid.Personalization;
+import com.sendgrid.Request;
+import com.sendgrid.Response;
+import com.sendgrid.SendGrid;
 
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.sendgrid.*;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -14,30 +19,30 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class EmailConsumer {
+public class SessionConsumer {
 
-  @KafkaListener(topics = "send-email")
-  public void processMessage(FeedBackEmail feedBackEmail) throws IOException {
+  @KafkaListener(topics = "request-session")
+  public void processMessage(SessionDetails sessionDetails) throws IOException {
     Email from = new Email("nair.sneha1997@gmail.com");
-    String subject = "Feedback on your recent mentorship on "+ feedBackEmail.getDate();
+    String subject = "A session has been requested";
     Email to = new Email("mail.nairsneha@gmail.com");
-    String rating = feedBackEmail.getRating().toString();
-    String posContent = feedBackEmail.getPosFeedback();
-    String negContent = feedBackEmail.getNegFeedback();
+    String studentName = sessionDetails.getStudentName();
+    String date = sessionDetails.getDate();
+    String time = sessionDetails.getTime();
+    String question = sessionDetails.getQuestion();
 
-    String contentStr = feedBackEmail.getComment();
+    SessionConsumer.DynamicTemplatePersonalization personalization = new SessionConsumer.DynamicTemplatePersonalization();
 
-    DynamicTemplatePersonalization personalization = new DynamicTemplatePersonalization();
     personalization.addTo(to);
     personalization.addDynamicTemplateData("subject", subject);
-    personalization.addDynamicTemplateData("genContent", contentStr);
-    personalization.addDynamicTemplateData("rating", rating);
-    personalization.addDynamicTemplateData("posContent", posContent);
-    personalization.addDynamicTemplateData("negContent", negContent);
+    personalization.addDynamicTemplateData("date", date);
+    personalization.addDynamicTemplateData("time", time);
+    personalization.addDynamicTemplateData("studentName", studentName);
+    personalization.addDynamicTemplateData("question", question);
 
     Mail mail = new Mail();
     mail.addPersonalization(personalization);
-    mail.setTemplateId("d-03d1cf1b116040c5ba7f85a2fdf12acb");
+    mail.setTemplateId("d-fa2e36acde9743c3a4f14cbb0ca7e884");
     mail.setFrom(from);
     mail.setSubject(subject);
 
@@ -54,7 +59,6 @@ public class EmailConsumer {
     }
 
   }
-
   private static class DynamicTemplatePersonalization extends Personalization {
 
     @JsonProperty(value = "dynamic_template_data")
@@ -77,6 +81,4 @@ public class EmailConsumer {
       }
     }
   }
-
 }
-

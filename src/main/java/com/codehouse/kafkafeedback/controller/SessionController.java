@@ -1,7 +1,9 @@
 package com.codehouse.kafkafeedback.controller;
 
 import com.codehouse.kafkafeedback.model.FeedBackEmail;
+import com.codehouse.kafkafeedback.model.SessionDetails;
 import com.codehouse.kafkafeedback.producer.EmailProducer;
+import com.codehouse.kafkafeedback.producer.SessionProducer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -10,17 +12,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @RestController
 @CrossOrigin(origins = "*")
-public class EmailController {
+public class SessionController {
 
   @Autowired
-  EmailProducer emailProducer;
+  SessionProducer sessionProducer;
 
-  @PostMapping(value="/email")
-  public ResponseEntity<String> sendMessage(@RequestBody FeedBackEmail email) {
-    emailProducer.publishToTopic(email);
+  @PostMapping(value="/session")
+  public ResponseEntity<String> sendMessage(@RequestBody SessionDetails details) {
+    sessionProducer.publishToTopic(details);
     return ResponseEntity.ok("Email Sent");
   }
 }
